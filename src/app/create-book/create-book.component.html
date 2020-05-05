@@ -1,14 +1,28 @@
 <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
   
-  <nz-form-item>
+  <!-- <nz-form-item>
     <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Note</nz-form-label>
     <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
       <input id="note" type="text" nz-input formControlName="note" />
     </nz-form-control>
+  </nz-form-item> -->
+  <h1>A New Auido Book For Taylor, Horray!</h1>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="title">Title</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your title!">
+      <input id="title" type="text" nz-input formControlName="title" />
+    </nz-form-control>
   </nz-form-item>
   
+  <!-- <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Note</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+      <input id="note" type="text" nz-input formControlName="note" />
+    </nz-form-control>
+  </nz-form-item> -->
+  
   <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Image Upload</nz-form-label>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="image">Image Upload</nz-form-label>
     <nz-form-control [nzSpan]="12" nzErrorTip="Please Upload Image!">
       <nz-upload
       class="avatar-uploader"
@@ -17,7 +31,7 @@
       nzListType="picture-card"
       [nzShowUploadList]="false"
       [nzBeforeUpload]="beforeUpload"
-      (nzChange)="handleChange($event)"
+      (nzChange)="handleImageChange($event)"
       >
         <ng-container *ngIf="!avatarUrl">
           <i class="upload-icon" nz-icon [nzType]="loading ? 'loading' : 'plus'"></i>
@@ -29,16 +43,36 @@
   </nz-form-item>
   
   <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzFor="gender" nzRequired>Gender</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please select your gender!">
-      <nz-select
-        id="gender"
-        formControlName="gender"
-        nzPlaceHolder="Select a option and change input text above"
-        (ngModelChange)="genderChange($event)"
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="audio">Audio Upload</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please upload Audio!">
+      <nz-upload
+      nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+      [nzHeaders]="{ authorization: 'authorization-text' }"
+      (nzChange)="handleAudioChange($event)"
       >
-        <nz-option nzValue="male" nzLabel="male"></nz-option>
-        <nz-option nzValue="female" nzLabel="female"></nz-option>
+      <button nz-button><i nz-icon nzType="upload"></i>Click to Upload</button>
+    </nz-upload>
+    </nz-form-control>
+  </nz-form-item>
+  
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzFor="Reader" nzRequired>Reader</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please select reader">
+      <!-- <nz-select
+        id="reader"
+        formControlName="reader"
+        nzPlaceHolder="Please select a reader"
+        (ngModelChange)="readerChange($event)"
+      > -->
+      <nz-select
+      id="reader"
+      formControlName="reader"
+      nzPlaceHolder="Please select a reader"
+      >
+        <nz-option nzValue="mom" nzLabel="mom"></nz-option>
+        <nz-option nzValue="dad" nzLabel="dad"></nz-option>
+        <nz-option nzValue="youtube" nzLabel="youtube"></nz-option>
+        <nz-option nzValue="others" nzLabel="others"></nz-option>
       </nz-select>
     </nz-form-control>
   </nz-form-item>

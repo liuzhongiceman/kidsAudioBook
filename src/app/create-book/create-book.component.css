@@ -4,8 +4,12 @@ form {
   max-width: 600px;
 }
 
-
 :host ::ng-deep .avatar-uploader > .ant-upload {
-  width: 128px;
-  height: 128px;
+  width: 250px;
+  height: 250px;
+}
+
+h1 { 
+  color: palevioletred;
+  margin-bottom: 30px;
 }

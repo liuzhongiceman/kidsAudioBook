@@ -1,5 +1,10 @@
 .ant-layout { min-height: 100%; }
 
+.ant-layout-header,
+.ant-menu {
+  background-color: #E91E63;
+}
+
 nz-content { background: #fff; }
 
 nz-footer { text-align: center; }

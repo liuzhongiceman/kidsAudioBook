@@ -8,4 +8,10 @@
 
 [nz-menu] {
   line-height: 64px;
+  background-color: #E91E63;
+}
+
+.ant-layout-header,
+.ant-menu {
+  background-color: #E91E63;
 }

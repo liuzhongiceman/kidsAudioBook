@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { UploadFile } from 'ng-zorro-antd/upload';
+import { UploadFile, UploadChangeParam } from 'ng-zorro-antd/upload';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -22,9 +22,9 @@ export class CreateBookComponent implements OnInit {
     }
   }
 
-  genderChange(value: string): void {
-    this.validateForm.get('note')!.setValue(value === 'male' ? 'Hi, man!' : 'Hi, lady!');
-  }
+  // readerChange(value: string): void {
+  //   this.validateForm.get('reader').setValue(value);
+  // }
 
   constructor(
     private fb: FormBuilder,
@@ -33,16 +33,21 @@ export class CreateBookComponent implements OnInit {
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      note: [null, [Validators.required]],
-      gender: [null, [Validators.required]]
+      title: [null, [Validators.required]],
+      reader: [null, [Validators.required]],
+      image: [null, [Validators.required]],
+      audio: [null, [Validators.required]],
     });
+  }
+  
+  isValidImage(type: String) {
+    return type === 'image/jpeg' || type === 'image/png' || type === 'image/gif' || type === 'image/jpg';
   }
   
   beforeUpload = (file: File) => {
     return new Observable((observer: Observer<boolean>) => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-      if (!isJpgOrPng) {
-        this.msg.error('You can only upload JPG file!');
+      if (!this.isValidImage(file.type)) {
+        this.msg.error('Please upload image!');
         observer.complete();
         return;
       }
@@ -52,7 +57,7 @@ export class CreateBookComponent implements OnInit {
         observer.complete();
         return;
       }
-      observer.next(isJpgOrPng && isLt2M);
+      observer.next(this.isValidImage(file.type) && isLt2M);
       observer.complete();
     });
   };
@@ -63,7 +68,7 @@ export class CreateBookComponent implements OnInit {
     reader.readAsDataURL(img);
   }
 
-  handleChange(info: { file: UploadFile }): void {
+  handleImageChange(info: { file: UploadFile }): void {
     switch (info.file.status) {
       case 'uploading':
         this.loading = true;
@@ -79,6 +84,17 @@ export class CreateBookComponent implements OnInit {
         this.msg.error('Network error');
         this.loading = false;
         break;
+    }
+  }
+  
+  handleAudioChange(info: UploadChangeParam): void {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      this.msg.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      this.msg.error(`${info.file.name} file upload failed.`);
     }
   }
 
