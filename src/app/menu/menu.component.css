@@ -15,3 +15,11 @@
 .ant-menu {
   background-color: #E91E63;
 }
+
+
+/* a { color: white;} */
+
+
+.ant-menu-horizontal>.ant-menu-item>a { color: white }
+
+.ant-menu-horizontal>.ant-menu-item-selected { border-bottom: 2px solid white; }

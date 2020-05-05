@@ -13,14 +13,9 @@ export class CreateBookComponent implements OnInit {
 
   loading = false;
   avatarUrl: string;
+  imageUrl: string;
+  audioUrl: string;
   validateForm: FormGroup;
-
-  submitForm(): void {
-    for (const i in this.validateForm.controls) {
-      this.validateForm.controls[i].markAsDirty();
-      this.validateForm.controls[i].updateValueAndValidity();
-    }
-  }
 
   // readerChange(value: string): void {
   //   this.validateForm.get('reader').setValue(value);
@@ -38,6 +33,14 @@ export class CreateBookComponent implements OnInit {
       image: [null, [Validators.required]],
       audio: [null, [Validators.required]],
     });
+  }
+  
+  submitForm(): void {
+    console.log('this.validateForm', this.validateForm);
+    // for (const i in this.validateForm.controls) {
+    //   this.validateForm.controls[i].markAsDirty();
+    //   this.validateForm.controls[i].updateValueAndValidity();
+    // }
   }
   
   isValidImage(type: String) {
@@ -78,6 +81,7 @@ export class CreateBookComponent implements OnInit {
         this.getBase64(info.file!.originFileObj!, (img: string) => {
           this.loading = false;
           this.avatarUrl = img;
+          // console.log('this.imageUrl', this.imageUrl);
         });
         break;
       case 'error':
@@ -92,6 +96,8 @@ export class CreateBookComponent implements OnInit {
       console.log(info.file, info.fileList);
     }
     if (info.file.status === 'done') {
+      console.log('this.info.file', info.file);
+
       this.msg.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === 'error') {
       this.msg.error(`${info.file.name} file upload failed.`);
