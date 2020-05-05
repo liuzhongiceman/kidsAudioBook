@@ -1,0 +1,52 @@
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+  
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Note</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+      <input id="note" type="text" nz-input formControlName="note" />
+    </nz-form-control>
+  </nz-form-item>
+  
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzRequired nzFor="note">Image Upload</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please Upload Image!">
+      <nz-upload
+      class="avatar-uploader"
+      nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+      nzName="avatar"
+      nzListType="picture-card"
+      [nzShowUploadList]="false"
+      [nzBeforeUpload]="beforeUpload"
+      (nzChange)="handleChange($event)"
+      >
+        <ng-container *ngIf="!avatarUrl">
+          <i class="upload-icon" nz-icon [nzType]="loading ? 'loading' : 'plus'"></i>
+          <div class="ant-upload-text">Upload</div>
+        </ng-container>
+        <img *ngIf="avatarUrl" [src]="avatarUrl" style="width: 100%" />
+      </nz-upload>
+    </nz-form-control>
+  </nz-form-item>
+  
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzFor="gender" nzRequired>Gender</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please select your gender!">
+      <nz-select
+        id="gender"
+        formControlName="gender"
+        nzPlaceHolder="Select a option and change input text above"
+        (ngModelChange)="genderChange($event)"
+      >
+        <nz-option nzValue="male" nzLabel="male"></nz-option>
+        <nz-option nzValue="female" nzLabel="female"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  
+  <nz-form-item>
+    <nz-form-control [nzSpan]="12" [nzOffset]="5">
+      <button nz-button nzType="primary">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+  
+</form>
