@@ -4,12 +4,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
+import { AudiosBookService } from './services/audiosBook.service';
+import { ImageService } from './services/image.service';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { ContentComponent } from './content/content.component';
 import { CardComponent } from './content/card/card.component';
 import { CreateBookComponent } from './create-book/create-book.component';
+import { DetailPageComponent } from './detail-page/detail-page.component';
 
 import { NzMessageService } from 'ng-zorro-antd';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
@@ -28,7 +32,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     MenuComponent,
     ContentComponent,
     CardComponent,
-    CreateBookComponent
+    CreateBookComponent,
+    DetailPageComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -39,7 +44,9 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     ReactiveFormsModule,
     NgZorroAntdModule
   ],
-  providers: [ 
+  providers: [
+    AudiosBookService,
+    ImageService,
     NzMessageService, 
     { provide: NZ_ICONS, useValue: icons }],
   bootstrap: [AppComponent]

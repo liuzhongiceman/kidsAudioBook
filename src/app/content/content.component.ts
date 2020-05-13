@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Post } from '../post.model';
+import { AudiosBookService } from '../services/audiosBook.service';
+
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-content',
   templateUrl: './content.component.html',
@@ -8,70 +13,28 @@ import { Component, OnInit } from '@angular/core';
 export class ContentComponent implements OnInit {
 
   cards: any = [];
-  
-  constructor() { }
+  posts: Post[] = [];
+  private postsSub: Subscription;
+
+  constructor(
+    public audiosBookService: AudiosBookService,
+  ) { }
 
   ngOnInit(): void {
     this.initCards();
   }
   
+  ngOnDestroy() {
+    this.postsSub.unsubscribe();
+  }
+  
   initCards() {
-    this.cards = [
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-      {
-        title: 'Card Title',
-        desc: 'This is the description',
-        image: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        author: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 
-      },
-    ]
+    this.audiosBookService.getPosts();
+    this.postsSub = this.audiosBookService.getPostUpdateListener()
+    .subscribe((posts: Post[]) => {
+      console.log('posts', posts);
+      this.posts = posts;
+    });
   }
 
 }

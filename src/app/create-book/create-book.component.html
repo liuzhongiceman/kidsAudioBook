@@ -1,73 +1,42 @@
-<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
-  
-  <h1>A New Auido Book For Taylor, Horray!</h1>
+<form nz-form [formGroup]="uploadForm" (ngSubmit)="submitForm(uploadForm.value)">
   <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzRequired nzFor="title">Title</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please input your title!">
-      <input id="title" type="text" nz-input formControlName="title" />
-    </nz-form-control>
-  </nz-form-item>
-  
-  <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzRequired nzFor="image">Image Upload</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please Upload Image!">
-      <nz-upload
-      class="avatar-uploader"
-      nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-      nzName="avatar"
-      nzListType="picture-card"
-      [nzShowUploadList]="false"
-      [nzBeforeUpload]="beforeUpload"
-      (nzChange)="handleImageChange($event)"
-      >
-        <ng-container *ngIf="!avatarUrl">
-          <i class="upload-icon" nz-icon [nzType]="loading ? 'loading' : 'plus'"></i>
-          <div class="ant-upload-text">Upload</div>
+    <nz-form-label [nzSpan]="7" nzRequired>Title</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+      <input nz-input formControlName="title" placeholder="title of the audio book" />
+      <ng-template #userErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          Please input your title!
         </ng-container>
-        <img *ngIf="avatarUrl" [src]="avatarUrl" style="width: 100%" />
-      </nz-upload>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
-  
   <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzRequired nzFor="audio">Audio Upload</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please upload Audio!">
-      <nz-upload
-      nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-      [nzHeaders]="{ authorization: 'authorization-text' }"
-      (nzChange)="handleAudioChange($event)"
-      >
-      <button nz-button><i nz-icon nzType="upload"></i>Click to Upload</button>
-    </nz-upload>
+    <nz-form-label [nzSpan]="7" nzRequired>Reader</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="emailErrorTpl">
+      <input nz-input formControlName="reader" placeholder="reader" />
+      <ng-template #emailErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          Please input your reader!
+        </ng-container>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
-  
   <nz-form-item>
-    <nz-form-label [nzSpan]="5" nzFor="Reader" nzRequired>Reader</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzErrorTip="Please select reader">
-      <!-- <nz-select
-        id="reader"
-        formControlName="reader"
-        nzPlaceHolder="Please select a reader"
-        (ngModelChange)="readerChange($event)"
-      > -->
-      <nz-select
-      id="reader"
-      formControlName="reader"
-      nzPlaceHolder="Please select a reader"
-      >
-        <nz-option nzValue="mom" nzLabel="mom"></nz-option>
-        <nz-option nzValue="dad" nzLabel="dad"></nz-option>
-        <nz-option nzValue="youtube" nzLabel="youtube"></nz-option>
-        <nz-option nzValue="others" nzLabel="others"></nz-option>
-      </nz-select>
+    <nz-form-label [nzSpan]="7" nzRequired>Image</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback nzErrorTip="Please upload your image!">
+      <input nz-input type="file" formControlName="image" (ngModelChange)="imageFileChange($event)" />
     </nz-form-control>
   </nz-form-item>
-  
   <nz-form-item>
-    <nz-form-control [nzSpan]="12" [nzOffset]="5">
-      <button nz-button nzType="primary">Submit</button>
+    <nz-form-label [nzSpan]="7" nzRequired>Audio</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback nzErrorTip="Please upload your audio!">
+      <input nz-input type="file" formControlName="audio" (ngModelChange)="audioFileChange($event)" />
     </nz-form-control>
   </nz-form-item>
-  
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="12">
+      <button nz-button nzType="primary" [disabled]="!uploadForm.valid">Submit</button>
+      <button nz-button (click)="resetForm($event)">Reset</button>
+    </nz-form-control>
+  </nz-form-item>
 </form>

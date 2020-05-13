@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { UploadFile, UploadChangeParam } from 'ng-zorro-antd/upload';
-import { Observable, Observer } from 'rxjs';
+
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { AudiosBookService } from '../services/audiosBook.service';
+import { ImageService } from  '../services/image.service';
 
 @Component({
   selector: 'app-create-book',
@@ -11,97 +12,91 @@ import { Observable, Observer } from 'rxjs';
 })
 export class CreateBookComponent implements OnInit {
 
-  loading = false;
-  avatarUrl: string;
+  imageObj: File;
+  audioObj: File;
   imageUrl: string;
   audioUrl: string;
-  validateForm: FormGroup;
+  submitted = false;
+  title: string = '';
+  reader: string = '';
 
-  // readerChange(value: string): void {
-  //   this.validateForm.get('reader').setValue(value);
-  // }
+  
+  uploadForm: FormGroup;
+
 
   constructor(
+    private audiosBookService: AudiosBookService,
     private fb: FormBuilder,
-    private msg: NzMessageService
-    ) {}
+    private imageService: ImageService,
+    ) {
+      this.uploadForm = this.fb.group({
+        title: ['', [Validators.required]],
+        reader: ['', [Validators.required]],
+        image: ['', [Validators.required]],
+        audio: ['', [Validators.required]]
+      });
+    }
 
-  ngOnInit(): void {
-    this.validateForm = this.fb.group({
-      title: [null, [Validators.required]],
-      reader: [null, [Validators.required]],
-      image: [null, [Validators.required]],
-      audio: [null, [Validators.required]],
+  ngOnInit() {
+  }
+
+  audioFileChange(element: Event) {
+    const FILE = (event.target as HTMLInputElement).files[0];
+    this.audioObj = FILE;
+    this.onAudioUpload()
+    .then(data => {
+      this.audioUrl = data;
     });
   }
   
-  submitForm(): void {
-    console.log('this.validateForm', this.validateForm);
-    // for (const i in this.validateForm.controls) {
-    //   this.validateForm.controls[i].markAsDirty();
-    //   this.validateForm.controls[i].updateValueAndValidity();
-    // }
-  }
-  
-  isValidImage(type: String) {
-    return type === 'image/jpeg' || type === 'image/png' || type === 'image/gif' || type === 'image/jpg';
-  }
-  
-  beforeUpload = (file: File) => {
-    return new Observable((observer: Observer<boolean>) => {
-      if (!this.isValidImage(file.type)) {
-        this.msg.error('Please upload image!');
-        observer.complete();
-        return;
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.msg.error('Image must smaller than 2MB!');
-        observer.complete();
-        return;
-      }
-      observer.next(this.isValidImage(file.type) && isLt2M);
-      observer.complete();
+  imageFileChange(element) {
+    const FILE = (event.target as HTMLInputElement).files[0];
+    this.imageObj = FILE;
+    this.onImageUpload()
+    .then(data => {
+      this.imageUrl = data;
     });
-  };
-
-  private getBase64(img: File, callback: (img: string) => void): void {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result!.toString()));
-    reader.readAsDataURL(img);
-  }
-
-  handleImageChange(info: { file: UploadFile }): void {
-    switch (info.file.status) {
-      case 'uploading':
-        this.loading = true;
-        break;
-      case 'done':
-        // Get this url from response in real world.
-        this.getBase64(info.file!.originFileObj!, (img: string) => {
-          this.loading = false;
-          this.avatarUrl = img;
-          // console.log('this.imageUrl', this.imageUrl);
-        });
-        break;
-      case 'error':
-        this.msg.error('Network error');
-        this.loading = false;
-        break;
-    }
   }
   
-  handleAudioChange(info: UploadChangeParam): void {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
-      console.log('this.info.file', info.file);
-
-      this.msg.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      this.msg.error(`${info.file.name} file upload failed.`);
-    }
+  async onImageUpload(): Promise<string> {
+    const imageForm = new FormData();
+    imageForm.append('file', this.imageObj);
+    return new Promise((resolve, reject) => {
+      this.imageService.imageUpload(imageForm).subscribe(res => {
+        resolve(res['file']);
+      });
+    })
   }
 
+  async onAudioUpload(): Promise<string> {
+    const audioForm = new FormData();
+    audioForm.append('file', this.audioObj);
+    return new Promise((resolve, reject) => {
+      this.imageService.imageUpload(audioForm).subscribe(res => {
+        resolve(res['file']);
+      });
+    })
+  }
+  
+  submitForm(value: { title: string; reader: string}) {
+    for (const key in this.uploadForm.controls) {
+      this.uploadForm.controls[key].markAsDirty();
+      this.uploadForm.controls[key].updateValueAndValidity();
+    }
+    
+    const baseUrl = "https://taylor-audio-books.s3-us-west-1.amazonaws.com/";
+    const image = baseUrl + this.imageUrl;
+    const audio = baseUrl + this.audioUrl;
+    
+    this.audiosBookService.create(value.title, value.reader, image, audio);
+  }
+  
+  resetForm(e: MouseEvent): void {
+    e.preventDefault();
+    this.uploadForm.reset();
+    for (const key in this.uploadForm.controls) {
+      this.uploadForm.controls[key].markAsPristine();
+      this.uploadForm.controls[key].updateValueAndValidity();
+    }
+  }
 }

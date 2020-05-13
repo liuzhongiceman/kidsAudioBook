@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-card',
@@ -7,31 +8,31 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class CardComponent implements OnInit {
 
+  constructor(private router: Router) { }
   
-  constructor() { }
-  
-  @Input() card; any;
+  @Input() post; any;
   authorImage: string;
   dadImage: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png';
   momImage: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png';
   youtubeImage: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png';
   
   ngOnInit(): void {
-    // this.initAuthorImage();
+    this.initAuthorImage();
+    console.log('post', this.post);
   }
   
   initAuthorImage() {
-    switch (this.card.author.toLowerCase()) {
+    switch (this.post.reader.toLowerCase()) {
       case 'mom':
         this.authorImage = this.momImage;
       case 'dad':
         this.authorImage = this.dadImage;
       default:
         this.authorImage = this.youtubeImage;
-      
     }
   }
   
-  
-
+  handleRouter(id: string) {
+    this.router.navigate(['/products', id]);
+  }
 }

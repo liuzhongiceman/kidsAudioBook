@@ -1,0 +1,12 @@
+<div *ngIf="post" class="card">
+  <nz-card nzHoverable style="width:500px" [nzCover]="coverTemplate">
+    <nz-card-meta [nzTitle]="post.title" [nzDescription]="post.reader"></nz-card-meta>
+    <audio controls>
+      <source [src]="post.audio" type="audio/mp3">
+    Your browser does not support the audio element.
+    </audio>
+  </nz-card>
+  <ng-template #coverTemplate>
+    <img alt="example" [src]="post.image" />
+  </ng-template>
+</div>
